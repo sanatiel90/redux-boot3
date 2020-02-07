@@ -31,22 +31,23 @@ class Home extends Component {
         })
     }
 
-    handleAddProduct = product => {
+    handleAddProduct = id => {
         /*todo componente que usa o connect tem acesso a uma propriedade chamada 'dispatch' que serve para disparar uma ACTION 
         (quando uma action é disparada, todos os reducers são ouvidos) */
         /* nesse caso a action addToCart foi repassada para as props do componente atraves do mapDispatchToProps com bindActionCreators usada no connect */
-        const { addToCart } = this.props
+        const { addToCartRequest } = this.props
 
         //dispatch recebe um type com a action a ser disparada e opcionalmente um objeto que vai modificar o state geral
         //nesse caso a action esta sendo acessada de CartActions
         //dispatch(CartActions.addToCart(product))
 
         //chamando a action
-        addToCart(product)
+        addToCartRequest(id)
     }
 
     render() {
         const { products } = this.state
+        const { amount } = this.props
         return (
             <ProductList>
                 {products.map(product => (
@@ -58,9 +59,10 @@ class Home extends Component {
                         <strong>{product.title}</strong>
                         <span>{product.priceFormatted}</span>
 
-                        <button type="button" onClick={() => this.handleAddProduct(product)}>
+                        <button type="button" onClick={() => this.handleAddProduct(product.id)}>
                             <div>
-                                <MdAddShoppingCart size={16} color="#fff" />
+                                <MdAddShoppingCart size={16} color="#fff" />{' '}
+                                {amount[product.id] || 0}
                             </div>
                             <span>ADICIONAR AO CARRINHO</span>
                         </button>
@@ -71,6 +73,14 @@ class Home extends Component {
     }
 }
 
+const mapStateToProps = state => ({
+    amount: state.cart.reduce((amount, product) => {
+        amount[product.id] = product.amount
+
+        return amount
+    }, {})
+});
+
 //mapDispatchToProps converte actions do redux em propriedades do component, fazendo com que as actions sejam acessiveis via props. no component
 //o mapDispatchToProps recebe o dispatch(aquele msm q dispara as actions) e usa a funcao do redux bindActionCreators para usar 
 //esse dispatch em um dado conjunto de actions (nesse caso, CartActions)
@@ -78,4 +88,4 @@ class Home extends Component {
 //deve ser o mapStateToProps (se mapStateToProps nao for usado no componente, deve-se passar null no primeiro param) 
 const mapDispatchToProps = dispatch => bindActionCreators(CartActions, dispatch);
 
-export default connect(null, mapDispatchToProps)(Home)
+export default connect(mapStateToProps, mapDispatchToProps)(Home)

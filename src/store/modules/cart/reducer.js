@@ -8,10 +8,14 @@ import produce from 'immer'
 export default function cart(state = [], action) {
     switch (action.type) {
         //action para add produto
-        case '@cart/ADD':
+        case '@cart/ADD_SUCCESS':
             //usando o produce do immer para tornar o state 'mutavel'
             return produce(state, draft => {
-                const productIndex = draft.findIndex(p => p.id === action.product.id)
+                const { product } = action
+
+                draft.push(product)
+                /**
+                 * const productIndex = draft.findIndex(p => p.id === action.product.id)
 
                 if (productIndex >= 0) {
                     draft[productIndex].amount += 1
@@ -21,6 +25,7 @@ export default function cart(state = [], action) {
                         amount: 1
                     })
                 }
+                 */
             });
 
         //action para remover produto    
@@ -34,11 +39,7 @@ export default function cart(state = [], action) {
             });
 
         //action para atualizar quantidade; 
-        case '@cart/UPDATE_AMOUNT': {
-            //se for tentado colocar pra zero, nao deixar
-            if (action.amount <= 0) {
-                return state
-            }
+        case '@cart/UPDATE_AMOUNT_SUCCESS': {
 
             return produce(state, draft => {
                 const productIndex = draft.findIndex(p => p.id === action.id)

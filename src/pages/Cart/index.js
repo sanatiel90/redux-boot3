@@ -8,14 +8,14 @@ import { formatPrice } from '../../util/format';
 
 //state cart e total acessiveis devido mapStateToProps
 //actions removeFromCart e updateAmount devido mapDispatchToProps
-function Cart({ cart, total, removeFromCart, updateAmount }) {
+function Cart({ cart, total, removeFromCart, updateAmountRequest }) {
 
     function increment(product) {
-        updateAmount(product.id, product.amount + 1)
+        updateAmountRequest(product.id, product.amount + 1)
     }
 
     function decrement(product) {
-        updateAmount(product.id, product.amount - 1)
+        updateAmountRequest(product.id, product.amount - 1)
     }
 
     return (
